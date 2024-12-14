@@ -41,3 +41,21 @@ cv2.imwrite("extracted_pcb.jpg", extracted_pcb)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
+''' STEP 2: YOLOv8 Training '''
+
+
+# Load the model
+model = YOLO('yolov8n.pt')
+
+# train & save the model
+model.train(
+    data="data/data.yaml",
+    epochs=2,
+    batch=8,
+    imgsz=500,
+    workers=0
+)
+gc.collect()
+model.save("trained_model.pt")

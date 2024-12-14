@@ -24,3 +24,20 @@ filtered_contours = []
 for i in contours:
     if cv2.contourArea(i) > min_area:
         filtered_contours.append(i)
+
+# Create mask
+mask = np.zeros_like(gray_image)
+cv2.drawContours(mask, filtered_contours, -1, 255, thickness=cv2.FILLED)
+
+# Apply mask to extract the PCB
+extracted_pcb = cv2.bitwise_and(image, image, mask=mask)
+
+# results
+cv2.imshow("Original Image",image)
+cv2.imshow("Thresholded Image",thresholded_image)
+cv2.imshow("Edges",edges)
+cv2.imshow("Extracted PCB",extracted_pcb)
+cv2.imwrite("extracted_pcb.jpg", extracted_pcb)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()

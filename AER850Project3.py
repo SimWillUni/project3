@@ -52,10 +52,43 @@ model = YOLO('yolov8n.pt')
 # train & save the model
 model.train(
     data="data/data.yaml",
-    epochs=2,
+    epochs=100,
     batch=8,
     imgsz=500,
     workers=0
 )
 gc.collect()
 model.save("trained_model.pt")
+
+
+''' Step 3: YOLOv8 Evaluation '''
+
+
+# Define evaluation images
+evaluation_images = [
+    "data/evaluation/ardmega.jpg",
+    "data/evaluation/arduno.jpg",
+    "data/evaluation/rasppi.jpg"
+]
+
+# Run predictions and visualize results
+
+for i, imgpath in enumerate(evaluation_images):
+
+    # Prediction
+    results = model.predict(imgpath, imgsz=900, conf=0.1)  # Adjust confidence as needed
+
+    # Visualize results
+    result_image = results[0].plot()
+
+    # Save and display the result
+    output_path = f"evaluation_result_{i+1}.jpg"
+    cv2.imwrite(output_path, result_image)
+    print(f"Evaluation result saved: {output_path}")
+
+    # Show the result
+    plt.figure(figsize=(10, 10))
+    plt.imshow(cv2.cvtColor(result_image, cv2.COLOR_BGR2RGB))
+    plt.title(f"Evaluation Result {i+1}")
+    plt.axis("off")
+    plt.show()
